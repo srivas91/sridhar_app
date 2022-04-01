@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.2.5/css/tableexport.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.5/js/tableexport.min.js"></script>
+  <style>
+      table ,tr td{
+    border:1px solid red
+}
+tbody {
+    display:block;
+    height:450px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+}
+thead {
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+.btn-toolbar {
+     margin-left: 0px;
+}
+  </style>
+  <script type="text/javascript">
+    $(document).ready(function(){
+        $.ajax({
+            url: "stud.json",
+            async: true,
+            dataType: 'json',
+            success: function (data) {
+                var tr;
+                for (var i = 0; i < data.length; i++) {
+                    tr = $('<tr/>');
+                    // tr.append("<td>" + data[i].id + "</td>");
+                    tr.append("<td>" + data[i].name + "</td>");
+                    tr.append("<td>" + data[i].course + "</td>");
+                    tr.append("<td>" + data[i].location + "</td>");
+                    $('#emp_body').append(tr);
+                }
+                ExportTable();
+            }
+        });
+    });
+    </script>
+    <script type="text/javascript">
+        // $(document).ready(function(){
+            function ExportTable(){
+                        $("table").tableExport({
+                        headings: true,                    // (Boolean), display table headings (th/td elements) in the <thead>
+                        footers: true,                     // (Boolean), display table footers (th/td elements) in the <tfoot>
+                        formats: ["xls", "csv", "txt"],    // (String[]), filetypes for the export
+                        fileName: "id",                    // (id, String), filename for the downloaded file
+                        bootstrap: true,                   // (Boolean), style buttons using bootstrap
+                        position: "well" ,                // (top, bottom), position of the caption element relative to table
+                        ignoreRows: null,                  // (Number, Number[]), row indices to exclude from the exported file
+                        ignoreCols: null,                 // (Number, Number[]), column indices to exclude from the exported file
+                        ignoreCSS: ".tableexport-ignore"   // (selector, selector[]), selector(s) to exclude from the exported file
+                    });
+                    }
+        // });
+        $(document).ready(function() {
+	$(".dataExport").click(function() {
+		var exportType = $(this).data('type');		
+		$('#dataTable').tableExport({
+			type : exportType,			
+			escape : 'false',
+			ignoreColumn: []
+		});		
+	});
+});
+        </script>
+</head>
+<body>
+    <!-- <div class="btn-group pull-right">
+        <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown">Export <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a class="dataExport" data-type="csv">CSV</a></li>
+            <li><a class="dataExport" data-type="excel">XLS</a></li>          
+            <li><a class="dataExport" data-type="txt">TXT</a></li>			 			  
+        </ul>
+    </div> -->
+    <div class="tbl_container1">
+		<table id="listing" class="table table-bordered table table-hover" cellspacing="0" width="100%">
+			<colgroup><col><col><col></colgroup>
+			<thead>
+				<tr>
+					<tr>
+						<th>Name</th>
+						<th>Course</th>
+						<th>Location</th>
+					</tr>
+				</tr>
+			</thead>
+			<tbody id="emp_body">
+			</tbody>
+		</table>
+	</div>
+
+    <script>
+        function myFunction() {
+var input, filter, table, tr, td, i, txtValue;
+input = document.getElementById("myInput");
+filter = input.value.toUpperCase();
+table = document.getElementById("table");
+tr = table.getElementsByTagName("tr");
+for (i = 0; i < tr.length; i++) {
+td = tr[i].getElementsByTagName("td")[0];
+if (td) {
+txtValue = td.textContent || td.innerText;
+if (txtValue.toUpperCase().indexOf(filter) > -1) {
+tr[i].style.display = "";
+} else {
+tr[i].style.display = "none";
+}
+}       
+}
+}
+
+        $(document).ready(function () {
+
+            // FETCHING DATA FROM JSON FILE
+            $.getJSON("stud.json", 
+                    function (data) {
+                var student = '';
+
+                // ITERATING THROUGH OBJECTS
+                $.each(data, function (key, value) {
+
+                    //CONSTRUCTION OF ROWS HAVING
+                    // DATA FROM JSON OBJECT
+                    student += '<tr>';
+                    // student += '<td>' + 
+                    //     value.id + '</td>';
+
+                    student += '<td>' + 
+                        value.name + '</td>';
+
+                    student += '<td>' + 
+                        value.course + '</td>';
+
+                     student += '<td>' + 
+                         value.location + '</td>';
+
+                    student += '</tr>';
+                });
+                  
+                //INSERTING ROWS INTO TABLE 
+                $('#listing').append(student);
+            });
+        });
+    </script>
+</body>
+</html>
